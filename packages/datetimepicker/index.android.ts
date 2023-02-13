@@ -340,7 +340,7 @@ class IntervalTimePicker extends android.widget.TimePicker {
 	static constructorCalled = false;
 	private minuteNumberPicker: android.widget.NumberPicker;
 
-	constructor(context: globalAndroid.content.Context, private readonly timeInterval: number, private readonly currentMinutes) {
+	constructor(context: globalAndroid.content.Context, private readonly timeInterval: number, private readonly currentMinutes: number) {
 		super(context);
 
 		IntervalTimePicker.constructorCalled = true;
@@ -348,70 +348,18 @@ class IntervalTimePicker extends android.widget.TimePicker {
 		const searchId = context.getResources().getIdentifier('minute', 'id', 'android');
 		this.minuteNumberPicker = this.findViewById(searchId) as android.widget.NumberPicker;
 
-		this.minuteNumberPicker.setValue(currentMinutes);
+		this.minuteNumberPicker.setValue(this.currentMinutes);
 		this.minuteNumberPicker.setMinValue(0);
-		this.minuteNumberPicker.setMaxValue(60 / timeInterval - 1);
+		this.minuteNumberPicker.setMaxValue(60 / this.timeInterval - 1);
 
 		const displayedValues = [];
 
-		for (let i = 0; i < 60; i += timeInterval) {
+		for (let i = 0; i < 60; i += this.timeInterval) {
 			displayedValues.push(i.toString().padStart(2, '0'));
 		}
 
 		this.minuteNumberPicker.setDisplayedValues(displayedValues);
 
-		// this.setOnTimeChangedListener(new TimeChangedListenerImpl(this));
-
-		// necessary when extending TypeScript constructors
 		return global.__native(this);
 	}
-
-	// public onTimeChanged(param0: globalAndroid.widget.TimePicker, param1: number, param2: number): void {
-	// 	// const searchId = param0.getResources().getIdentifier('minute', 'id', 'android');
-	// 	// const minutePicker = this.findViewById(searchId) as android.widget.NumberPicker;
-
-	// 	this.setMinute(30);
-	// }
 }
-
-// @NativeClass
-// @Interfaces([android.widget.TimePicker.OnTimeChangedListener])
-// class TimeChangedListenerImpl extends java.lang.Object implements android.widget.TimePicker.OnTimeChangedListener {
-// 	constructor(public owner: android.widget.TimePicker) {
-// 		super();
-
-// 		return global.__native(this);
-// 	}
-
-// 	onTimeChanged(picker: android.widget.TimePicker, hour: number, minute: number): void {
-// 		this.owner.setMinute(minute / 15);
-// 	}
-// }
-
-// function initializeTimeChangedListener(): void {
-// 	if (TimeChangedListener) {
-// 		return;
-// 	}
-
-// 	@NativeClass
-// 	@Interfaces([android.widget.TimePicker.OnTimeChangedListener])
-// 	class TimeChangedListenerImpl extends java.lang.Object implements android.widget.TimePicker.OnTimeChangedListener {
-// 		constructor(public owner: TimePicker) {
-// 			super();
-
-// 			return global.__native(this);
-// 		}
-
-// 		onTimeChanged(picker: android.widget.TimePicker, hour: number, minute: number): void {
-// 			const timePicker = this.owner;
-// 			if (timePicker.updatingNativeValue) {
-// 				return;
-// 			}
-
-// 			const validTime = getValidTime(timePicker, hour, minute);
-// 			timeProperty.nativeValueChange(timePicker, new Date(0, 0, 0, validTime.hour, validTime.minute));
-// 		}
-// 	}
-
-// 	TimeChangedListener = TimeChangedListenerImpl;
-// }
